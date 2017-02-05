@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+
+
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+    <context:component-scan base-package="leo.test"/>
+
+
+    <!--<bean id="simpleJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
+        <!--<property name="targetObject" ref="demoBean" />-->
+        <!--<property name="targetMethod" value="print" />-->
+    <!--</bean>-->
+
+    <bean name="jobDetailFactoryBeanDemo" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="leo.test.Beans.JobDetailFactoryBeanDemo" />
+        <property name="durability" value="true"/>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="test" value="test-value"/>
+            </map>
+        </property>
+    </bean>
+
+
+
+    <!--<bean id="simpleTrigger"  class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">-->
+        <!--<property name="jobDetail" ref="jobDetailFactoryBeanDemo" />-->
+        <!--<property name="startDelay" value="1000" />-->
+        <!--<property name="repeatInterval" value="2000" />-->
+        <!--&lt;!&ndash;<property name="repeatCount" value="10"/>&ndash;&gt;-->
+    <!--</bean>-->
+
+    <bean id="cronTrigger"  class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="jobDetailFactoryBeanDemo" />
+        <!--<property name="cronExpression" value="0/5 * * ? * SAT-SUN" />-->
+        <property name="cronExpression" value="0/5 * * ? * *" />
+
+    </bean>
+
+
+    <bean  class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="jobDetails">
+            <list>
+                <ref bean="jobDetailFactoryBeanDemo" />
+            </list>
+        </property>
+
+        <property name="triggers">
+            <list>
+                <ref bean="cronTrigger" />
+            </list>
+        </property>
+    </bean>
+</beans>
